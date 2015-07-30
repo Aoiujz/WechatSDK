@@ -118,12 +118,13 @@ class IndexController extends Controller{
                         break;
 
                     case '音乐':
+                        $media_id = $this->upload('thumb');
                         $wechat->replyMusic(
                             'Wakawaka!', 
                             'Shakira - Waka Waka, MaxRNB - Your first R/Hiphop source', 
                             'http://wechat.zjzit.cn/Public/music.mp3', 
                             'http://wechat.zjzit.cn/Public/music.mp3', 
-                            'http://wechat.zjzit.cn/Public/music.jpg'
+                            $media_id
                         ); //回复音乐消息
                         break;
 
@@ -178,6 +179,11 @@ class IndexController extends Controller{
 
             case 'video':
                 $filename = './Public/video.mp4';
+                $media    = $auth->mediaUpload($filename, $type);
+                break;
+
+            case 'thumb':
+                $filename = './Public/music.jpg';
                 $media    = $auth->mediaUpload($filename, $type);
                 break;
             
