@@ -13,6 +13,7 @@ namespace Home\Controller;
 
 use Think\Controller;
 use Com\Wechat;
+use Com\WechatAuth;
 
 class IndexController extends Controller{
     /**
@@ -100,5 +101,22 @@ class IndexController extends Controller{
              * 
              */
         }
+    }
+
+    public function uploadImage(){
+        $appid     = 'wx4d5073e65ba9fcce';
+        $appsecret = '45951709b7f7cf91a1ba26e6eda27d62';
+
+        $token = session("token");
+
+        if($token){
+            $auth = new WechatAuth($appid, $appsecret, $token);
+        } else {
+            $auth  = new WechatAuth($appid, $appsecret);
+            $token = $auth->getAccessToken();
+        }
+
+        dump($auth);
+        dump($token);
     }
 }
