@@ -83,7 +83,7 @@ class IndexController extends Controller{
             case Wechat::MSG_TYPE_EVENT:
                 switch ($data['Event']) {
                     case Wechat::MSG_EVENT_SUBSCRIBE:
-                        $wechat->replyText('欢迎您关注麦当苗儿公众平台！回复“文本”，“图片”，“图文”，“多图文”查看相应的信息！');
+                        $wechat->replyText('欢迎您关注麦当苗儿公众平台！回复“文本”，“图片”，“语音”，“视频”，“音乐”，“图文”，“多图文”查看相应的信息！');
                         break;
 
                     case Wechat::MSG_EVENT_UNSUBSCRIBE:

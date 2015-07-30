@@ -78,6 +78,8 @@ class Wechat {
      * @param  string $type    消息类型
      */
     public function response($content, $type = self::MSG_TYPE_TEXT){
+        file_put_contents('./response.json', json_encode($content));
+
         /* 基础数据 */
         $data = array(
             'ToUserName'   => $this->data['FromUserName'],
