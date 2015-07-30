@@ -53,6 +53,8 @@ class IndexController extends Controller{
              * Wechat::MSG_EVENT_MASSSENDJOBFINISH  //群发消息成功
              */
 
+            file_put_contents('./data.json', json_encode($data));
+
             // $content = '测试文本内容'; //回复内容，回复不同类型消息，内容的格式有所不同
             // $type    = 'text'; //回复消息的类型
             $wechat->replyNewsOnce(
