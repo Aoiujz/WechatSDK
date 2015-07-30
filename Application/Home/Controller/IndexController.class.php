@@ -35,11 +35,12 @@ class IndexController extends Controller{
 
             /**
              * 你可以在这里分析数据，决定要返回给用户什么样的信息
-             * 接受到的信息类型有9种，分别使用下面九个常量标识
+             * 接受到的信息类型有10种，分别使用下面10个常量标识
              * Wechat::MSG_TYPE_TEXT       //文本消息
              * Wechat::MSG_TYPE_IMAGE      //图片消息
              * Wechat::MSG_TYPE_VOICE      //音频消息
              * Wechat::MSG_TYPE_VIDEO      //视频消息
+             * Wechat::MSG_TYPE_SHORTVIDEO //视频消息
              * Wechat::MSG_TYPE_MUSIC      //音乐消息
              * Wechat::MSG_TYPE_NEWS       //图文消息（推送过来的应该不存在这种类型，但是可以给用户回复该类型消息）
              * Wechat::MSG_TYPE_LOCATION   //位置消息
