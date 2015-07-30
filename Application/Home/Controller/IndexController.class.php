@@ -61,6 +61,10 @@ class IndexController extends Controller{
                         $wechat->replyText('欢迎访问麦当苗儿公众平台，这是文本回复的内容！');
                         break;
 
+                    case '图片':
+                        $wechat->replyImage('208829366');
+                        break;
+
                     case '单条图文':
                         $wechat->replyNewsOnce(
                             "全民创业蒙的就是你，来一盆冷水吧！",
