@@ -140,7 +140,7 @@ class IndexController extends Controller{
         } else {
             $auth  = new WechatAuth($appid, $appsecret);
             $token = $auth->getAccessToken();
-            dump($token);
+            
             session(array('expire' => $token['expires_in']));
             session("token", $token['access_token']);
         }
@@ -160,8 +160,6 @@ class IndexController extends Controller{
             session("token", null);
             $this->upload($type);
         }
-        
-        dump($media);
 
         return $media['media_id'];
 
