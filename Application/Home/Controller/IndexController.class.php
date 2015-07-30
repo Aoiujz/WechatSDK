@@ -118,7 +118,7 @@ class IndexController extends Controller{
                         break;
 
                     case '音乐':
-                        $media_id = $this->upload('thumb');
+                        $thumb_media_id = $this->upload('thumb');
                         $wechat->replyMusic(
                             'Wakawaka!', 
                             'Shakira - Waka Waka, MaxRNB - Your first R/Hiphop source', 
@@ -185,6 +185,8 @@ class IndexController extends Controller{
             case 'thumb':
                 $filename = './Public/music.jpg';
                 $media    = $auth->mediaUpload($filename, $type);
+
+                $media['media_id'] = $media['thumb_media_id'];
                 break;
             
             default:
