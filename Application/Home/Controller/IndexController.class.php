@@ -83,7 +83,7 @@ class IndexController extends Controller{
             case Wechat::MSG_TYPE_EVENT:
                 switch ($data['Event']) {
                     case Wechat::MSG_EVENT_SUBSCRIBE:
-                        $wechat->replyText('欢迎您关注麦当苗儿公众平台！回复”文本“，”图片“，”图文“，”多图文“查看相应的信息！');
+                        $wechat->replyText('欢迎您关注麦当苗儿公众平台！回复“文本”，“图片”，“图文”，“多图文”查看相应的信息！');
                         break;
 
                     case Wechat::MSG_EVENT_UNSUBSCRIBE:
@@ -104,6 +104,16 @@ class IndexController extends Controller{
 
                     case '图片':
                         $media_id = $this->upload('image');
+                        $wechat->replyImage($media_id);
+                        break;
+
+                    case '语音':
+                        $media_id = $this->upload('voice');
+                        $wechat->replyImage($media_id);
+                        break;
+
+                    case '视频':
+                        $media_id = $this->upload('video');
                         $wechat->replyImage($media_id);
                         break;
 
@@ -140,7 +150,7 @@ class IndexController extends Controller{
         } else {
             $auth  = new WechatAuth($appid, $appsecret);
             $token = $auth->getAccessToken();
-            
+
             session(array('expire' => $token['expires_in']));
             session("token", $token['access_token']);
         }
@@ -150,10 +160,19 @@ class IndexController extends Controller{
                 $filename = './Public/image.jpg';
                 $media    = $auth->mediaUpload($filename, $type);
                 break;
+
+            case 'voice':
+                $filename = './Public/voice.mp3';
+                $media    = $auth->mediaUpload($filename, $type);
+                break;
+
+            case 'video':
+                $filename = './Public/video.mp4';
+                $media    = $auth->mediaUpload($filename, $type);
+                break;
             
             default:
-                # code...
-                break;
+                return '';
         }
 
         if($media["errcode"] == 42001){ //access_token expired
