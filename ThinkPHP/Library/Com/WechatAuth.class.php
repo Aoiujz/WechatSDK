@@ -83,7 +83,7 @@ class WechatAuth {
                 $this->accessToken = $token;
             }
         } else {
-            throw new \Exception('参数错误！');
+            throw new \Exception('缺少参数 APP_ID 和 APP_SECRET!');
         }
     }
 
@@ -149,14 +149,14 @@ class WechatAuth {
 
     /**
      * 获取授权用户信息
-     * @param  string $token acess_token
-     * @param  string $lang  指定的语言
-     * @return array         用户信息数据，具体参见微信文档
+     * @param  string $openid 用户的OpenID
+     * @param  string $lang   指定的语言
+     * @return array          用户信息数据，具体参见微信文档
      */
-    public function getUserInfo($token, $lang = 'zh_CN'){
+    public function getUserInfo($openid, $lang = 'zh_CN'){
         $query = array(
-            'access_token' => $token['access_token'],
-            'openid'       => $token['openid'],
+            'access_token' => $this->accessToken,
+            'openid'       => $openid,
             'lang'         => $lang,
         );
 
@@ -181,7 +181,6 @@ class WechatAuth {
         $file = array('media' => "@{$filename}");
         $url  = "{$this->mediaURL}/media/upload";
         $data = self::http($url, $param, $file, 'POST');
-
         return json_decode($data, true);
     }
 

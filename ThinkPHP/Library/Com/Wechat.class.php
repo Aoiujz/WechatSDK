@@ -13,21 +13,24 @@ namespace Com;
 
 class Wechat {
     /* 消息类型常量 */
-    const MSG_TYPE_TEXT     = 'text';
-    const MSG_TYPE_IMAGE    = 'image';
-    const MSG_TYPE_VOICE    = 'voice';
-    const MSG_TYPE_VIDEO    = 'video';
-    const MSG_TYPE_MUSIC    = 'music';
-    const MSG_TYPE_NEWS     = 'news';
-    const MSG_TYPE_LOCATION = 'location';
-    const MSG_TYPE_LINK     = 'link';
-    const MSG_TYPE_EVENT    = 'event';
+    const MSG_TYPE_TEXT       = 'text';
+    const MSG_TYPE_IMAGE      = 'image';
+    const MSG_TYPE_VOICE      = 'voice';
+    const MSG_TYPE_VIDEO      = 'video';
+    const MSG_TYPE_SHORTVIDEO = 'shortvideo';
+    const MSG_TYPE_LOCATION   = 'location';
+    const MSG_TYPE_LINK       = 'link';
+    const MSG_TYPE_MUSIC      = 'music';
+    const MSG_TYPE_NEWS       = 'news';
+    const MSG_TYPE_EVENT      = 'event';
 
     /* 事件类型常量 */
     const MSG_EVENT_SUBSCRIBE         = 'subscribe';
+    const MSG_EVENT_UNSUBSCRIBE       = 'unsubscribe';
     const MSG_EVENT_SCAN              = 'SCAN';
     const MSG_EVENT_LOCATION          = 'LOCATION';
     const MSG_EVENT_CLICK             = 'CLICK';
+    const MSG_EVENT_VIEW              = 'VIEW';
     const MSG_EVENT_MASSSENDJOBFINISH = 'MASSSENDJOBFINISH';
     
     /**
