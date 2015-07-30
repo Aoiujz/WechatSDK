@@ -109,12 +109,12 @@ class IndexController extends Controller{
 
                     case '语音':
                         $media_id = $this->upload('voice');
-                        $wechat->replyImage($media_id);
+                        $wechat->replyVoice($media_id);
                         break;
 
                     case '视频':
                         $media_id = $this->upload('video');
-                        $wechat->replyImage($media_id);
+                        $wechat->replyVideo($media_id);
                         break;
 
                     case '图文':
@@ -179,7 +179,7 @@ class IndexController extends Controller{
             session("token", null);
             $this->upload($type);
         }
-        
+
         file_put_contents('./media.json', json_encode($media));
 
         return $media['media_id'];
