@@ -83,7 +83,7 @@ class IndexController extends Controller{
             case Wechat::MSG_TYPE_EVENT:
                 switch ($data['Event']) {
                     case Wechat::MSG_EVENT_SUBSCRIBE:
-                        $wechat->replyText('欢迎您关注麦当苗儿公众平台！回复”文本“，”图片“，”单图文“');
+                        $wechat->replyText('欢迎您关注麦当苗儿公众平台！回复”文本“，”图片“，”图文“，”多图文“查看相应的信息！');
                         break;
 
                     case Wechat::MSG_EVENT_UNSUBSCRIBE:
@@ -103,10 +103,11 @@ class IndexController extends Controller{
                         break;
 
                     case '图片':
-                        $wechat->replyImage('208829366');
+                        $media_id = $this->upload('image');
+                        $wechat->replyImage($media_id);
                         break;
 
-                    case '单图文':
+                    case '图文':
                         $wechat->replyNewsOnce(
                             "全民创业蒙的就是你，来一盆冷水吧！",
                             "全民创业已经如火如荼，然而创业是一个非常自我的过程，它是一种生活方式的选择。从外部的推动有助于提高创业的存活率，但是未必能够提高创新的成功率。第一次创业的人，至少90%以上都会以失败而告终。创业成功者大部分年龄在30岁到38岁之间，而且创业成功最高的概率是第三次创业。", 
