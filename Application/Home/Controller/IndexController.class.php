@@ -114,7 +114,17 @@ class IndexController extends Controller{
 
                     case '视频':
                         $media_id = $this->upload('video');
-                        $wechat->replyVideo($media_id);
+                        $wechat->replyVideo($media_id, '视频标题', '视频描述信息。。。');
+                        break;
+
+                    case '音乐':
+                        $wechat->replyMusic(
+                            'Wakawaka!', 
+                            'Shakira - Waka Waka, MaxRNB - Your first R/Hiphop source', 
+                            'http://yinyueshiting.baidu.com/data2/music/134368704/23473715212400128.mp3?xcode=59c2f8634e5593386f333bb99c6701d9', 
+                            'http://yinyueshiting.baidu.com/data2/music/134368704/23473715212400128.mp3?xcode=59c2f8634e5593386f333bb99c6701d9', 
+                            'http://pic6.qiyipic.com/thumb/20121218/a197952u2_160_90.jpg'
+                        ); //回复音乐消息
                         break;
 
                     case '图文':
