@@ -124,7 +124,7 @@ class IndexController extends Controller{
                             'Shakira - Waka Waka, MaxRNB - Your first R/Hiphop source', 
                             'http://wechat.zjzit.cn/Public/music.mp3', 
                             'http://wechat.zjzit.cn/Public/music.mp3', 
-                            $media_id
+                            $thumb_media_id
                         ); //回复音乐消息
                         break;
 
@@ -135,6 +135,17 @@ class IndexController extends Controller{
                             "http://www.topthink.com/topic/11991.html",
                             "http://yun.topthink.com/Uploads/Editor/2015-07-30/55b991cad4c48.jpg"
                         ); //回复单条图文消息
+                        break;
+
+                    case '多图文':
+                        $news = array(
+                            "全民创业蒙的就是你，来一盆冷水吧！",
+                            "全民创业已经如火如荼，然而创业是一个非常自我的过程，它是一种生活方式的选择。从外部的推动有助于提高创业的存活率，但是未必能够提高创新的成功率。第一次创业的人，至少90%以上都会以失败而告终。创业成功者大部分年龄在30岁到38岁之间，而且创业成功最高的概率是第三次创业。", 
+                            "http://www.topthink.com/topic/11991.html",
+                            "http://yun.topthink.com/Uploads/Editor/2015-07-30/55b991cad4c48.jpg"
+                        ); //回复单条图文消息
+
+                        $wechat->replyNews($news, $news, $news, $news, $news);
                         break;
                     
                     default:
