@@ -54,55 +54,8 @@ class IndexController extends Controller{
              * Wechat::MSG_EVENT_CLICK        //菜单点击
              */
 
+            //记录微信推送过来的数据
             file_put_contents('./data.json', json_encode($data));
-
-            switch ($data['MsgType']) {
-                case Wechat::MSG_TYPE_EVENT:
-                    switch ($data['Event']) {
-                        case Wechat::MSG_EVENT_SUBSCRIBE:
-                            $wechat->replyText('欢迎您关注麦当苗儿公众平台！');
-                            break;
-                            
-                        case Wechat::MSG_EVENT_UNSUBSCRIBE:
-                            //取消关注，记录日志
-                            break;
-
-                        default:
-                            $wechat->replyText("欢迎访问麦当苗儿公众平台！您的事件类型：{$data['Event']}，EventKey：{$data['EventKey']}");
-                            break;
-                    }
-                    break;
-
-                case Wechat::MSG_TYPE_TEXT:
-                    switch ($data['Content']) {
-                        case '文本':
-                            $wechat->replyText('欢迎访问麦当苗儿公众平台，这是文本回复的内容！');
-                            break;
-
-                        case '图片':
-                            $wechat->replyImage('208829366');
-                            break;
-
-                        case '单条图文':
-                            $wechat->replyNewsOnce(
-                                "全民创业蒙的就是你，来一盆冷水吧！",
-                                "全民创业已经如火如荼，然而创业是一个非常自我的过程，它是一种生活方式的选择。从外部的推动有助于提高创业的存活率，但是未必能够提高创新的成功率。第一次创业的人，至少90%以上都会以失败而告终。创业成功者大部分年龄在30岁到38岁之间，而且创业成功最高的概率是第三次创业。", 
-                                "http://www.topthink.com/topic/11991.html",
-                                "http://yun.topthink.com/Uploads/Editor/2015-07-30/55b991cad4c48.jpg"
-                            ); //回复单条图文消息
-                            break;
-                        
-                        default:
-                            $wechat->replyText("欢迎访问麦当苗儿公众平台！您输入的内容是：{$data['Content']}");
-                            break;
-                    }
-                    break;
-                
-                default:
-                    # code...
-                    break;
-            }
-            
 
             /* 响应当前请求(自动回复) */
             //$wechat->response($content, $type);
@@ -120,8 +73,60 @@ class IndexController extends Controller{
              * $wechat->replyNewsOnce($title, $discription, $url, $picurl); //回复单条图文消息
              * 
              */
+            
+            $this->test($wechat, $data);
         }
     }
+
+    private function test($wechat, $data){
+        switch ($data['MsgType']) {
+            case Wechat::MSG_TYPE_EVENT:
+                switch ($data['Event']) {
+                    case Wechat::MSG_EVENT_SUBSCRIBE:
+                        $wechat->replyText('欢迎您关注麦当苗儿公众平台！');
+                        break;
+
+                    case Wechat::MSG_EVENT_UNSUBSCRIBE:
+                        //取消关注，记录日志
+                        break;
+
+                    default:
+                        $wechat->replyText("欢迎访问麦当苗儿公众平台！您的事件类型：{$data['Event']}，EventKey：{$data['EventKey']}");
+                        break;
+                }
+                break;
+
+            case Wechat::MSG_TYPE_TEXT:
+                switch ($data['Content']) {
+                    case '文本':
+                        $wechat->replyText('欢迎访问麦当苗儿公众平台，这是文本回复的内容！');
+                        break;
+
+                    case '图片':
+                        $wechat->replyImage('208829366');
+                        break;
+
+                    case '单条图文':
+                        $wechat->replyNewsOnce(
+                            "全民创业蒙的就是你，来一盆冷水吧！",
+                            "全民创业已经如火如荼，然而创业是一个非常自我的过程，它是一种生活方式的选择。从外部的推动有助于提高创业的存活率，但是未必能够提高创新的成功率。第一次创业的人，至少90%以上都会以失败而告终。创业成功者大部分年龄在30岁到38岁之间，而且创业成功最高的概率是第三次创业。", 
+                            "http://www.topthink.com/topic/11991.html",
+                            "http://yun.topthink.com/Uploads/Editor/2015-07-30/55b991cad4c48.jpg"
+                        ); //回复单条图文消息
+                        break;
+                    
+                    default:
+                        $wechat->replyText("欢迎访问麦当苗儿公众平台！您输入的内容是：{$data['Content']}");
+                        break;
+                }
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+    }
+
 
     public function upload($type){
         $appid     = 'wx58aebef2023e68cd';
