@@ -53,14 +53,14 @@ class IndexController extends Controller{
              * Wechat::MSG_EVENT_MASSSENDJOBFINISH  //群发消息成功
              */
 
-            $content = ''; //回复内容，回复不同类型消息，内容的格式有所不同
-            $type    = ''; //回复消息的类型
+            $content = '测试文本内容'; //回复内容，回复不同类型消息，内容的格式有所不同
+            $type    = 'text'; //回复消息的类型
 
             /* 响应当前请求(自动回复) */
             $wechat->response($content, $type);
 
             /**
-             * 响应当前请求还有以下方法可以只使用
+             * 响应当前请求还有以下方法可以使用
              * 具体参数格式说明请参考文档
              * 
              * $wechat->replyText($text); //回复文本消息
