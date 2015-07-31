@@ -51,13 +51,7 @@ class WechatAuth {
      * 微信api根路径
      * @var string
      */
-    private $apiURL    = 'https://api.weixin.qq.com/cgi-bin';
-
-    /**
-     * 微信媒体文件根路径
-     * @var string
-     */
-    private $mediaURL  = 'http://file.api.weixin.qq.com/cgi-bin';
+    private $apiURL = 'https://api.weixin.qq.com/cgi-bin';
 
     /**
      * 微信二维码根路径
@@ -166,23 +160,49 @@ class WechatAuth {
     }
 
     /**
-     * 上传媒体资源
+     * 上传零时媒体资源
      * @param  string $filename 媒体资源本地路径
      * @param  string $type     媒体资源类型，具体请参考微信开发手册
      */
     public function mediaUpload($filename, $type){
-        $param = array(
-            'access_token' => $this->accessToken,
-            'type'         => $type
-        );
-
         $filename = realpath($filename);
         if(!$filename) throw new \Exception('资源路径错误！');
         
-        $file = array('media' => "@{$filename}");
-        $url  = "{$this->mediaURL}/media/upload";
-        $data = self::http($url, $param, $file, 'POST');
-        return json_decode($data, true);
+        $data = array(
+            'type'  => $type,
+            'media' => "@{$filename}"
+        );
+        
+        return $this->api('media/upload', $data);
+    }
+
+    /**
+     * 上传永久媒体资源
+     * @param string $filename    媒体资源本地路径
+     * @param string $type        媒体资源类型，具体请参考微信开发手册
+     * @param string $description 资源描述，仅资源类型为 video 时有效
+     */
+    public function materialAddMaterial($filename, $type, $description){
+        $filename = realpath($filename);
+        if(!$filename) throw new \Exception('资源路径错误！');
+        
+        $data = array(
+            'type'  => $type,
+            'media' => "@{$filename}",
+        );
+
+        if($type == 'video'){
+            if(is_array($description)){
+                //保护中文，微信api不支持中文转义的json结构
+                array_walk_recursive($description, function(&$value){
+                    $value = urlencode($value);
+                });
+                $description = urldecode(json_encode($data));
+            }
+            $data['description'] = $description;
+        }
+
+        return $this->api('material/add_material', $data);
     }
 
     /**
@@ -197,7 +217,7 @@ class WechatAuth {
             'media_id'     => $media_id
         );
 
-        $url = "{$this->mediaURL}/media/get?";
+        $url = "{$this->apiURL}/media/get?";
         return $url . http_build_query($param);
     }
 
