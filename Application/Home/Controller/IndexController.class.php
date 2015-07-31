@@ -190,7 +190,7 @@ class IndexController extends Controller{
                 break;
 
             case 'video':
-                $filename    = './Public/jobdeer.mp4';
+                $filename    = './Public/video.mp4';
                 $discription = array('title' => '视频标题', 'introduction' => '视频描述');
                 $media       = $auth->materialAddMaterial($filename, $type, $discription);
                 break;
@@ -206,7 +206,7 @@ class IndexController extends Controller{
 
         if($media["errcode"] == 42001){ //access_token expired
             session("token", null);
-            //$this->upload($type);
+            $this->upload($type);
         }
         
         file_put_contents('./media.json', json_encode($media));

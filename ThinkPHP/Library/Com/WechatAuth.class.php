@@ -182,7 +182,7 @@ class WechatAuth {
      * @param string $type        媒体资源类型，具体请参考微信开发手册
      * @param string $description 资源描述，仅资源类型为 video 时有效
      */
-    public function materialAddMaterial($filename, $type, $description){
+    public function materialAddMaterial($filename, $type, $description = ''){
         $filename = realpath($filename);
         if(!$filename) throw new \Exception('资源路径错误！');
         
@@ -197,7 +197,7 @@ class WechatAuth {
                 array_walk_recursive($description, function(&$value){
                     $value = urlencode($value);
                 });
-                $description = urldecode(json_encode($data));
+                $description = urldecode(json_encode($description));
             }
             $data['description'] = $description;
         }
