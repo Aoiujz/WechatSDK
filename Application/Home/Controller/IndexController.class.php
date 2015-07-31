@@ -181,27 +181,23 @@ class IndexController extends Controller{
         switch ($type) {
             case 'image':
                 $filename = './Public/image.jpg';
-                $media    = $auth->mediaUpload($filename, $type);
-                break;
-
-            case 'image2':
-                $filename = './Public/image.jpg';
-                $media    = $auth->mediaUpload2($filename, $type);
+                $media    = $auth->materialAddMaterial($filename, $type);
                 break;
 
             case 'voice':
                 $filename = './Public/voice.mp3';
-                $media    = $auth->mediaUpload($filename, $type);
+                $media    = $auth->materialAddMaterial($filename, $type);
                 break;
 
             case 'video':
-                $filename = './Public/video.mp4';
-                $media    = $auth->mediaUpload($filename, $type);
+                $filename    = './Public/video.mp4';
+                $discription = array('title' => '视频标题', 'introduction' => '视频描述');
+                $media       = $auth->materialAddMaterial($filename, $type, $discription);
                 break;
 
             case 'thumb':
                 $filename = './Public/music.jpg';
-                $media    = $auth->mediaUpload($filename, $type);
+                $media    = $auth->materialAddMaterial($filename, $type);
 
                 $media['media_id'] = $media['thumb_media_id'];
                 break;
@@ -212,11 +208,10 @@ class IndexController extends Controller{
 
         if($media["errcode"] == 42001){ //access_token expired
             session("token", null);
-            $this->upload($type);
+            //$this->upload($type);
         }
 
         file_put_contents('./media.json', json_encode($media));
-        dump($media);
         return $media['media_id'];
 
     }
