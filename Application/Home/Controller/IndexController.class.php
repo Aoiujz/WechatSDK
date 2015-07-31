@@ -163,8 +163,8 @@ class IndexController extends Controller{
 
 
     public function upload($type){
-        $appid     = 'wx58aebef2023e68cd';
-        $appsecret = 'bf818ec2fb49c20a478bbefe9dc88c60';
+        $appid     = 'wxfb51aaac6400361a';
+        $appsecret = '6d0d7acde7a440bf88396f2f7e232b1a';
 
         $token = session("token");
 
@@ -208,7 +208,7 @@ class IndexController extends Controller{
             session("token", null);
             //$this->upload($type);
         }
-
+        
         file_put_contents('./media.json', json_encode($media));
         return $media['media_id'];
 
