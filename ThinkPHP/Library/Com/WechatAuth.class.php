@@ -168,12 +168,31 @@ class WechatAuth {
         $filename = realpath($filename);
         if(!$filename) throw new \Exception('资源路径错误！');
         
-        $data = array(
-            'type'  => $type,
-            'media' => "@{$filename}"
+        $param = array('type' => $type);
+        $data  = array( 'media' => "@{$filename}");
+
+        return $this->api('media/upload', $data, 'POST', $param);
+    }
+
+    /**
+     * 上传媒体资源
+     * @param  string $filename 媒体资源本地路径
+     * @param  string $type     媒体资源类型，具体请参考微信开发手册
+     */
+    public function mediaUpload2($filename, $type){
+        $param = array(
+            'access_token' => $this->accessToken,
+            'type'         => $type
         );
+
+        $filename = realpath($filename);
+        if(!$filename) throw new \Exception('资源路径错误！');
         
-        return $this->api('media/upload', $data);
+        $file = array('media' => "@{$filename}");
+        $url  = "{$this->mediaURL}/media/upload";
+        $data = self::http($url, $param, $file, 'POST');
+
+        return json_decode($data, true);
     }
 
     /**
@@ -488,7 +507,7 @@ class WechatAuth {
             $params = array_merge($params, $param);
         }
 
-        $url  = "{$this->apiURL}/{$name}";
+        $url  = "{$this->apiURL}/{$name}"; dump($url);
         if(!empty($data)){
             //保护中文，微信api不支持中文转义的json结构
             array_walk_recursive($data, function(&$value){
@@ -496,7 +515,7 @@ class WechatAuth {
             });
             $data = urldecode(json_encode($data));
         }
-
+        dump($data);
         $data = self::http($url, $params, $data, $method);
 
         return json_decode($data, true);

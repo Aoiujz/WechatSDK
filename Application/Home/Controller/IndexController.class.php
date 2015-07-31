@@ -184,6 +184,11 @@ class IndexController extends Controller{
                 $media    = $auth->mediaUpload($filename, $type);
                 break;
 
+            case 'image2':
+                $filename = './Public/image.jpg';
+                $media    = $auth->mediaUpload2($filename, $type);
+                break;
+
             case 'voice':
                 $filename = './Public/voice.mp3';
                 $media    = $auth->mediaUpload($filename, $type);
@@ -211,7 +216,7 @@ class IndexController extends Controller{
         }
 
         file_put_contents('./media.json', json_encode($media));
-
+        dump($media);
         return $media['media_id'];
 
     }
