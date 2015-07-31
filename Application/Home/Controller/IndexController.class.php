@@ -190,7 +190,7 @@ class IndexController extends Controller{
                 break;
 
             case 'video':
-                $filename    = './Public/video.mp4';
+                $filename    = './Public/jobdeer.mp4';
                 $discription = array('title' => '视频标题', 'introduction' => '视频描述');
                 $media       = $auth->materialAddMaterial($filename, $type, $discription);
                 break;
