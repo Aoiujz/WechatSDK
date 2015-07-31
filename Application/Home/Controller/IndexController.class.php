@@ -198,8 +198,6 @@ class IndexController extends Controller{
             case 'thumb':
                 $filename = './Public/music.jpg';
                 $media    = $auth->materialAddMaterial($filename, $type);
-
-                $media['media_id'] = $media['thumb_media_id'];
                 break;
             
             default:
