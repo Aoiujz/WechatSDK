@@ -201,7 +201,7 @@ class WechatAuth {
             }
             $data['description'] = $description;
         }
-
+        dump($data);
         return $this->api('material/add_material', $data, 'POST', '', false);
     }
 
