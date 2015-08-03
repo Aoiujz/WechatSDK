@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2006-2014 http://thinkphp.cn All rights reserved.
+// | Copyright (c) 2006-2015 http://thinkphp.cn All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
@@ -10,9 +10,15 @@
 // +----------------------------------------------------------------------
 
 namespace Com;
+use Com\WechatCrypt;
+
+//在非ThinkPHP环境下使用时定义当前时间戳
+defined('NOW_TIME') || define('NOW_TIME', $_SERVER['REQUEST_TIME']);
 
 class Wechat {
-    /* 消息类型常量 */
+    /**
+     * 消息类型常量
+     */
     const MSG_TYPE_TEXT       = 'text';
     const MSG_TYPE_IMAGE      = 'image';
     const MSG_TYPE_VOICE      = 'voice';
@@ -24,7 +30,9 @@ class Wechat {
     const MSG_TYPE_NEWS       = 'news';
     const MSG_TYPE_EVENT      = 'event';
 
-    /* 事件类型常量 */
+    /**
+     * 事件类型常量
+     */
     const MSG_EVENT_SUBSCRIBE         = 'subscribe';
     const MSG_EVENT_UNSUBSCRIBE       = 'unsubscribe';
     const MSG_EVENT_SCAN              = 'SCAN';
@@ -34,34 +42,85 @@ class Wechat {
     const MSG_EVENT_MASSSENDJOBFINISH = 'MASSSENDJOBFINISH';
     
     /**
+     * 消息加解密方式
+     */
+    const MSG_TEXT_MODE = 0;
+    const MSG_COMP_MODE = 1;
+    const MSG_SAFE_MODE = 2;
+
+    /**
      * 微信推送过来的数据
      * @var array
      */
     private $data = array();
 
     /**
+     * 微信APP_ID
+     * @var string
+     */
+    private $appId = '';
+
+    /**
+     * 消息加密KEY
+     * @var string
+     */
+    private $encodingAESKey = '';
+
+    /**
      * 构造方法，用于实例化微信SDK
      * 自动回复消息时实例化该SDK
      * @param string $token 微信后台填写的TOKEN
+     * @param string $mode  消息加解密方式
+     * @param string $key   消息加密KEY (EncodingAESKey)
+     * @param string $appid 微信APPID (安全模式和兼容模式有效)
      */
-    public function __construct($token){
+    public function __construct($token, $mode = self::MSG_TEXT_MODE, $key = '', $appid = ''){
+        
+        if($mode != self::MSG_TEXT_MODE){
+            if(empty($key) || empty($appid)){
+                throw new \Exception('缺少参数EncodingAESKey或APP_ID！');
+            }
+
+            $this->encodingAESKey = $key;
+            $this->appId          = $appid;
+        }
+
         if($token){
             self::auth($token) || exit;
 
             if(IS_GET){
                 exit($_GET['echostr']);
             } else {
-                $xml = file_get_contents("php://input"); 
-                $xml = new \SimpleXMLElement($xml);
-                $xml || exit;
-
-                foreach ($xml as $key => $value) {
-                    $this->data[$key] = strval($value);
-                }
+                $this->init();
             }
         } else {
-            throw new \Exception('参数错误！');
+            throw new \Exception('缺少参数TOKEN！');
         }
+    }
+
+    private function init(){
+        $xml  = file_get_contents("php://input"); 
+        $data = self::xml2data($xml);
+
+        //处理消息内容
+        switch ($mode) {
+            case self::MSG_TEXT_MODE: //明文模式
+                //不需要任何处理
+                break;
+
+            case self::MSG_COMP_MODE: //兼容模式
+                $data['Encrypt'] = $this->extract($data['Encrypt']);
+                break;
+
+            case self::MSG_SAFE_MODE: //安全模式
+                $data = $this->extract($data['Encrypt']);
+                break;
+
+            default:
+                throw new \Exception('不支持的消息加密类型！');
+        }
+
+        $this->data = $data;
     }
 
     /**
@@ -198,6 +257,21 @@ class Wechat {
         }
     }
 
+    protected static function xml2data($xml){
+        $xml = new \SimpleXMLElement($xml);
+        
+        if(!$xml){
+            throw new \Exception('非法XXML');
+        }
+
+        $data = array();
+        foreach ($xml as $key => $value) {
+            $data[$key] = strval($value);
+        }
+
+        return $data;
+    }
+
     /**
      * 对数据进行签名认证，确保是微信发送的数据
      * @param  string $token 微信开放平台设置的TOKEN
@@ -300,6 +374,20 @@ class Wechat {
         $data['Articles']     = $articles;
 
         return $data;
+    }
+
+    private static function extract($encrypt){
+        //消息解密对象
+        $WechatCrypt = new WechatCrypt($this->encodingAESKey, $this->appId);
+
+        //解密得到回明文消息
+        $decrypt = $WechatCrypt->decrypt($encrypt);
+
+        return self::xml2data($decrypt);
+    }
+
+    private static function generate(){
+
     }
 
 }
