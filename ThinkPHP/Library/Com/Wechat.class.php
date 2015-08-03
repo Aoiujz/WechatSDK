@@ -58,19 +58,19 @@ class Wechat {
      * 微信APP_ID
      * @var string
      */
-    private $appId = '';
+    private static $appId = '';
 
     /**
      * 消息加密KEY
      * @var string
      */
-    private $encodingAESKey = '';
+    private static $encodingAESKey = '';
 
     /**
      * 当前消息模式
      * @var integer
      */
-    private $msgMode = 0;
+    private static $msgMode = 0;
 
     /**
      * 构造方法，用于实例化微信SDK
@@ -81,15 +81,15 @@ class Wechat {
      * @param string $appid 微信APPID (安全模式和兼容模式有效)
      */
     public function __construct($token, $mode = self::MSG_TEXT_MODE, $key = '', $appid = ''){
-        $this->msgMode = $mode; //设置消息模式
+        self::$msgMode = $mode; //设置消息模式
 
         if($mode != self::MSG_TEXT_MODE){
             if(empty($key) || empty($appid)){
                 throw new \Exception('缺少参数EncodingAESKey或APP_ID！');
             }
 
-            $this->encodingAESKey = $key;
-            $this->appId          = $appid;
+            self::$encodingAESKey = $key;
+            self::$appId          = $appid;
         }
 
         if($token){
@@ -112,7 +112,7 @@ class Wechat {
         file_put_contents('./data.json', json_encode($data));
 
         //处理消息内容
-        switch ($this->msgMode) {
+        switch (self::$msgMode) {
             case self::MSG_TEXT_MODE: //明文模式
                 //不需要任何处理
                 break;
@@ -386,9 +386,8 @@ class Wechat {
     }
 
     private static function extract($encrypt){
-        file_put_contents('./decrypt.json', json_encode(array($this->encodingAESKey, $this->appId, $encrypt)));
         //消息解密对象
-        $WechatCrypt = new WechatCrypt($this->encodingAESKey, $this->appId);
+        $WechatCrypt = new WechatCrypt(self::$encodingAESKey, self::$appId);
 
         //解密得到回明文消息
         $decrypt = $WechatCrypt->decrypt($encrypt);
