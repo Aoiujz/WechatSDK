@@ -109,7 +109,7 @@ class Wechat {
         $xml  = file_get_contents("php://input");  
         $data = self::xml2data($xml);
         file_put_contents('./data.xml', $xml);
-        file_put_contents('./data.json', $data);
+        file_put_contents('./data.json', json_encode($data));
 
         //处理消息内容
         switch ($this->msgMode) {
