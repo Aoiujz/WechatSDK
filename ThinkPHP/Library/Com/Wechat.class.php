@@ -67,6 +67,12 @@ class Wechat {
     private $encodingAESKey = '';
 
     /**
+     * 当前消息模式
+     * @var integer
+     */
+    private $msgMode = 0;
+
+    /**
      * 构造方法，用于实例化微信SDK
      * 自动回复消息时实例化该SDK
      * @param string $token 微信后台填写的TOKEN
@@ -75,7 +81,8 @@ class Wechat {
      * @param string $appid 微信APPID (安全模式和兼容模式有效)
      */
     public function __construct($token, $mode = self::MSG_TEXT_MODE, $key = '', $appid = ''){
-        
+        $this->msgMode = $mode; //设置消息模式
+
         if($mode != self::MSG_TEXT_MODE){
             if(empty($key) || empty($appid)){
                 throw new \Exception('缺少参数EncodingAESKey或APP_ID！');
@@ -91,30 +98,30 @@ class Wechat {
             if(IS_GET){
                 exit($_GET['echostr']);
             } else {
-                $this->init($mode);
+                $this->init();
             }
         } else {
             throw new \Exception('缺少参数TOKEN！');
         }
     }
 
-    private function init($mode){
+    private function init(){
         $xml  = file_get_contents("php://input");  
         $data = self::xml2data($xml);
         file_put_contents('./data.xml', $xml);
 
         //处理消息内容
-        switch ($mode) {
+        switch ($this->msgMode) {
             case self::MSG_TEXT_MODE: //明文模式
                 //不需要任何处理
                 break;
 
             case self::MSG_COMP_MODE: //兼容模式
-                $data['Encrypt'] = $this->extract($data['Encrypt']);
+                $data['Encrypt'] = self::extract($data['Encrypt']);
                 break;
 
             case self::MSG_SAFE_MODE: //安全模式
-                $data = $this->extract($data['Encrypt']);
+                $data = self::extract($data['Encrypt']);
                 break;
 
             default:
