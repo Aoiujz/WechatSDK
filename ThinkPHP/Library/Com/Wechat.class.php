@@ -118,7 +118,7 @@ class Wechat {
                 break;
 
             case self::MSG_COMP_MODE: //兼容模式
-                $data['Encrypt'] = self::extract($data['Encrypt']);
+                $data['Decrypt'] = self::extract($data['Encrypt']);
                 break;
 
             case self::MSG_SAFE_MODE: //安全模式
@@ -386,6 +386,7 @@ class Wechat {
     }
 
     private static function extract($encrypt){
+        file_put_contents('./decrypt.json', json_encode(array($this->encodingAESKey, $this->appId, $encrypt)));
         //消息解密对象
         $WechatCrypt = new WechatCrypt($this->encodingAESKey, $this->appId);
 
