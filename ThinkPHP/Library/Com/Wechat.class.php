@@ -109,6 +109,7 @@ class Wechat {
         $xml  = file_get_contents("php://input");  
         $data = self::xml2data($xml);
         file_put_contents('./data.xml', $xml);
+        file_put_contents('./data.json', $data);
 
         //处理消息内容
         switch ($this->msgMode) {
@@ -390,7 +391,7 @@ class Wechat {
 
         //解密得到回明文消息
         $decrypt = $WechatCrypt->decrypt($encrypt);
-
+        file_put_contents('./decrypt.xml', $decrypt);
         return self::xml2data($decrypt);
     }
 
