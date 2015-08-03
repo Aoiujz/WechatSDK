@@ -390,7 +390,7 @@ class Wechat {
 
         //解密得到回明文消息
         $decrypt = $WechatCrypt->decrypt($encrypt);
-        
+        file_put_contents('data.xml', $decrypt);
         return self::xml2data($decrypt);
     }
 
