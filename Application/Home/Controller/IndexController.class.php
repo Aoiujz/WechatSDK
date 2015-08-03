@@ -23,10 +23,12 @@ class IndexController extends Controller{
      */
     public function index($id = ''){
 
-        $token = 'E9E05045F594065909D2B5554A8F34CE'; //微信后台填写的TOKEN
+        $appid     = 'wx4d5073e65ba9fcce'; //AppID(应用ID)
+        $token     = 'E9E05045F594065909D2B5554A8F34CE'; //微信后台填写的TOKEN
+        $crypt_key = 'q6FPCUoCQWaOiR3UUe5RfQu8A7hlJcMW4BnNyH9z2il'; //消息加密KEY（EncodingAESKey）
 
         /* 加载微信SDK */
-        $wechat = new Wechat($token);
+        $wechat = new Wechat($token, Wechat::MSG_COMP_MODE, $crypt_key, $appid);
 
         /* 获取请求信息 */
         $data = $wechat->request();
