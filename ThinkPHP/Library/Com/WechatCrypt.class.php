@@ -90,6 +90,7 @@ class WechatCrypt{
 
         //执行解密
         $decrypt = mdecrypt_generic($td, $encrypt);
+        file_put_contents('./test.html', $decrypt);
         
         //去除PKCS7补位
         $decrypt = self::PKCS7Decode($decrypt, mcrypt_enc_get_key_size($td));
