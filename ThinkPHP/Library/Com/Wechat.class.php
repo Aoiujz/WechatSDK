@@ -99,8 +99,9 @@ class Wechat {
     }
 
     private function init(){
-        $xml  = file_get_contents("php://input"); 
+        $xml  = file_get_contents("php://input");  
         $data = self::xml2data($xml);
+        file_put_contents('./data.xml', $xml);
 
         //处理消息内容
         switch ($mode) {
