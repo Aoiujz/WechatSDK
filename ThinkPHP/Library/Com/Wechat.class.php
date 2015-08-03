@@ -108,7 +108,6 @@ class Wechat {
     private function init(){
         $xml  = file_get_contents("php://input");  
         $data = self::xml2data($xml);
-        file_put_contents('./data.xml', $xml);
         file_put_contents('./data.json', json_encode($data));
 
         //处理消息内容
@@ -389,6 +388,7 @@ class Wechat {
         file_put_contents('./decrypt.json', json_encode(array(self::$encodingAESKey, self::$appId, $encrypt)));
         //消息解密对象
         $WechatCrypt = new WechatCrypt(self::$encodingAESKey, self::$appId);
+        file_put_contents('./decrypt.log', print_r($WechatCrypt, true));
 
         //解密得到回明文消息
         $decrypt = $WechatCrypt->decrypt($encrypt);
