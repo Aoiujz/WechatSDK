@@ -162,7 +162,7 @@ class IndexController extends Controller{
     }
 
 
-    public function upload($type){
+    private function upload($type){
         $appid     = 'wx58aebef2023e68cd';
         $appsecret = 'bf818ec2fb49c20a478bbefe9dc88c60';
 
