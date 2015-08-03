@@ -387,11 +387,10 @@ class Wechat {
     private static function extract($encrypt){
         //消息解密对象
         $WechatCrypt = new WechatCrypt(self::$encodingAESKey, self::$appId);
-        file_put_contents('./decrypt.html', print_r($WechatCrypt, true));
 
         //解密得到回明文消息
         $decrypt = $WechatCrypt->decrypt($encrypt);
-        file_put_contents('./decrypt.xml', $decrypt);
+        
         return self::xml2data($decrypt);
     }
 

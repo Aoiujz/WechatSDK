@@ -81,7 +81,7 @@ class IndexController extends Controller{
                 $this->test($wechat, $data);
             }
         } catch(\Exception $e){
-            file_put_contents('./error.log', $e->getMessage());
+            file_put_contents('./error.json', json_encode($e->getMessage()));
         }
         
     }
