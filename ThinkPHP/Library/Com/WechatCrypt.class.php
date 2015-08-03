@@ -81,16 +81,15 @@ class WechatCrypt{
     public function decrypt($encrypt){
         //BASE64解码
         $encrypt = base64_decode($encrypt);
-        file_put_contents('./test.html', $encrypt);
+
         //打开加密算法模块
         $td = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_CBC, '');
-        file_put_contents('./test.html', 123);
+
         //初始化加密算法模块
         mcrypt_generic_init($td, $this->cyptKey, substr($this->cyptKey, 0, 16));
-        file_put_contents('./test.html', 456);
+
         //执行解密
         $decrypt = mdecrypt_generic($td, $encrypt);
-        file_put_contents('./test.html', $decrypt);
         
         //去除PKCS7补位
         $decrypt = self::PKCS7Decode($decrypt, mcrypt_enc_get_key_size($td));
