@@ -91,14 +91,14 @@ class Wechat {
             if(IS_GET){
                 exit($_GET['echostr']);
             } else {
-                $this->init();
+                $this->init($mode);
             }
         } else {
             throw new \Exception('缺少参数TOKEN！');
         }
     }
 
-    private function init(){
+    private function init($mode){
         $xml  = file_get_contents("php://input");  
         $data = self::xml2data($xml);
         file_put_contents('./data.xml', $xml);
