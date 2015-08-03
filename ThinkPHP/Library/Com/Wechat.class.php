@@ -386,6 +386,7 @@ class Wechat {
     }
 
     private static function extract($encrypt){
+        file_put_contents('./decrypt.json', json_encode(array(self::$encodingAESKey, self::$appId, $encrypt)));
         //消息解密对象
         $WechatCrypt = new WechatCrypt(self::$encodingAESKey, self::$appId);
 
