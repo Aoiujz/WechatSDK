@@ -14,6 +14,7 @@ use Com\WechatCrypt;
 
 //支持在非ThinkPHP环境下使用
 defined('NOW_TIME') || define('NOW_TIME', $_SERVER['REQUEST_TIME']);
+defined('IS_GET')   || define('IS_GET',   $_SERVER['REQUEST_METHOD'] == 'GET');
 
 class Wechat {
     /**
@@ -88,6 +89,7 @@ class Wechat {
     public function __construct($token, $mode = self::MSG_TEXT_MODE, $key = '', $appid = ''){
         self::$msgMode = $mode; //设置消息模式
 
+        //参数验证
         if($mode != self::MSG_TEXT_MODE){
             if(empty($key) || empty($appid)){
                 throw new \Exception('缺少参数EncodingAESKey或APP_ID！');
@@ -97,6 +99,7 @@ class Wechat {
             self::$appId          = $appid;
         }
 
+        //TOKEN验证
         if($token){
             self::auth($token) || exit;
 
@@ -416,7 +419,8 @@ class Wechat {
         $encrypt = $WechatCrypt->encrypt($xml);
 
         //签名
-        $sign = array(self::$token, NOW_TIME, $_GET['nonce'], $encrypt);
+        $nonce = mt_rand(0, 9999999999);
+        $sign  = array(self::$token, NOW_TIME, $nonce, $encrypt);
         sort($sign, SORT_STRING);
         $signature = sha1(implode($sign));
 
@@ -425,7 +429,7 @@ class Wechat {
             'Encrypt'      => $encrypt,
             'MsgSignature' => $signature,
             'TimeStamp'    => NOW_TIME,
-            'Nonce'        => $_GET['nonce'],
+            'Nonce'        => $nonce,
         );
 
         file_put_contents('response.json', json_encode($data));
