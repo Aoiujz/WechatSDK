@@ -112,10 +112,10 @@ class Wechat {
     private function init(){
         $xml  = file_get_contents("php://input");  
         $data = self::xml2data($xml);
-
+        file_put_contents('./data.xml', $xml);
         //安全模式 或兼容模式
         if(self::$msgSafeMode){
-            if(isset($data['MsgType'])){
+            if(isset($data['MsgType'] && isset($data['MsgId'])){
                 //兼容模式追加解密后的消息内容
                 $data['Decrypt'] = self::extract($data['Encrypt']);
             } else { 
@@ -420,7 +420,6 @@ class Wechat {
             'Nonce'        => $nonce,
         );
 
-        file_put_contents('response.json', json_encode($data));
         return $data;
     }
 }
