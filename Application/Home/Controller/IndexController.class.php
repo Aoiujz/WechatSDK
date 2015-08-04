@@ -60,6 +60,7 @@ class IndexController extends Controller{
 
                 //记录微信推送过来的数据
                 file_put_contents('./data.json', json_encode($data));
+                file_put_contents('./get.json', json_encode($_GET));
 
                 /* 响应当前请求(自动回复) */
                 //$wechat->response($content, $type);

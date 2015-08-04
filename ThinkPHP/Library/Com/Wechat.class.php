@@ -12,7 +12,7 @@
 namespace Com;
 use Com\WechatCrypt;
 
-//在非ThinkPHP环境下使用时定义当前时间戳
+//支持在非ThinkPHP环境下使用
 defined('NOW_TIME') || define('NOW_TIME', $_SERVER['REQUEST_TIME']);
 
 class Wechat {
@@ -33,13 +33,12 @@ class Wechat {
     /**
      * 事件类型常量
      */
-    const MSG_EVENT_SUBSCRIBE         = 'subscribe';
-    const MSG_EVENT_UNSUBSCRIBE       = 'unsubscribe';
-    const MSG_EVENT_SCAN              = 'SCAN';
-    const MSG_EVENT_LOCATION          = 'LOCATION';
-    const MSG_EVENT_CLICK             = 'CLICK';
-    const MSG_EVENT_VIEW              = 'VIEW';
-    const MSG_EVENT_MASSSENDJOBFINISH = 'MASSSENDJOBFINISH';
+    const MSG_EVENT_SUBSCRIBE   = 'subscribe';
+    const MSG_EVENT_UNSUBSCRIBE = 'unsubscribe';
+    const MSG_EVENT_SCAN        = 'SCAN';
+    const MSG_EVENT_LOCATION    = 'LOCATION';
+    const MSG_EVENT_CLICK       = 'CLICK';
+    const MSG_EVENT_VIEW        = 'VIEW';
     
     /**
      * 消息加解密方式
@@ -53,6 +52,12 @@ class Wechat {
      * @var array
      */
     private $data = array();
+
+    /**
+     * 微信TOKEN
+     * @var string
+     */
+    private static $token = '';
 
     /**
      * 微信APP_ID
@@ -98,6 +103,7 @@ class Wechat {
             if(IS_GET){
                 exit($_GET['echostr']);
             } else {
+                self::$token = $token;
                 $this->init();
             }
         } else {
@@ -158,6 +164,11 @@ class Wechat {
             $data = array_merge($data, $content);
         } else {
             $data[ucfirst($type)] = $content;
+        }
+
+        //安全模式，加密消息内容
+        if(self::$msgMode == self::MSG_SAFE_MODE){
+            $data = self::generate($data);
         }
 
         /* 转换数据为XML */
@@ -392,8 +403,32 @@ class Wechat {
         return self::xml2data($decrypt);
     }
 
-    private static function generate(){
+    private static function generate($data){
+        /* 转换数据为XML */
+        $xml = new \SimpleXMLElement('<xml></xml>');
+        self::data2xml($xml, $data);
+        $xml = $xml->asXML();
 
+        //消息加密对象
+        $WechatCrypt = new WechatCrypt(self::$encodingAESKey, self::$appId);
+
+        //加密得到密文消息
+        $encrypt = $WechatCrypt->encrypt($xml);
+
+        //签名
+        $sign = array(self::$token, NOW_TIME, $_GET['nonce'], $encrypt);
+        sort($sign, SORT_STRING);
+        $signature = sha1(implode($sign));
+
+        /* 加密消息基础数据 */
+        $data = array(
+            'Encrypt'      => $encrypt,
+            'MsgSignature' => $signature,
+            'TimeStamp'    => NOW_TIME,
+            'Nonce'        => $_GET['nonce'],
+        );
+
+        file_put_contents('response.json', json_encode($data));
+        return $data;
     }
-
 }
