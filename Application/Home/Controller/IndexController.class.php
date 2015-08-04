@@ -24,9 +24,9 @@ class IndexController extends Controller{
     public function index($id = ''){
         //调试
         try{
-            $appid = ''; //AppID(应用ID)
-            $token = ''; //微信后台填写的TOKEN
-            $crypt = ''; //消息加密KEY（EncodingAESKey）
+            $appid = 'wx58aebef2023e68cd'; //AppID(应用ID)
+            $token = 'E9E05045F594065909D2B5554A8F34CE'; //微信后台填写的TOKEN
+            $crypt = 'q6FPCUoCQWaOiR3UUe5RfQu8A7hlJcMW4BnNyH9z2il'; //消息加密KEY（EncodingAESKey）
             
             /* 加载微信SDK */
             $wechat = new Wechat($token, $appid, $crypt);
@@ -180,8 +180,8 @@ class IndexController extends Controller{
      * @return string       媒体资源ID
      */
     private function upload($type){
-        $appid     = '';
-        $appsecret = '';
+        $appid     = 'wx58aebef2023e68cd';
+        $appsecret = 'bf818ec2fb49c20a478bbefe9dc88c60';
 
         $token = session("token");
 
