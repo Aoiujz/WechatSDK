@@ -228,6 +228,5 @@ class IndexController extends Controller{
 
         file_put_contents('./media.json', json_encode($media));
         return $media['media_id'];
-
     }
 }
