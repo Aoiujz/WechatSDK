@@ -269,6 +269,11 @@ class Wechat {
         }
     }
 
+    /**
+     * XML数据解码
+     * @param  string $xml 原始XML字符串
+     * @return array       解码后的数组
+     */
     protected static function xml2data($xml){
         $xml = new \SimpleXMLElement($xml);
         
@@ -388,6 +393,11 @@ class Wechat {
         return $data;
     }
 
+    /**
+     * 验证并解密密文数据
+     * @param  string $encrypt 密文
+     * @return array           解密后的数据
+     */
     private static function extract($encrypt){
         //验证数据签名
         $signature = self::sign($_GET['timestamp'], $_GET['nonce'], $encrypt);
@@ -405,6 +415,11 @@ class Wechat {
         return self::xml2data($decrypt);
     }
 
+    /**
+     * 加密并生成密文消息数据
+     * @param  array $data 获取到的加密的消息数据
+     * @return array       生成的加密消息结构
+     */
     private static function generate($data){
         /* 转换数据为XML */
         $xml = new \SimpleXMLElement('<xml></xml>');
