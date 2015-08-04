@@ -75,10 +75,10 @@ class Wechat {
      * 构造方法，用于实例化微信SDK
      * 自动回复消息时实例化该SDK
      * @param string $token 微信后台填写的TOKEN
-     * @param string $key   消息加密KEY (EncodingAESKey)
      * @param string $appid 微信APPID (安全模式和兼容模式有效)
+     * @param string $key   消息加密KEY (EncodingAESKey)
      */
-    public function __construct($token, $key = '', $appid = ''){
+    public function __construct($token, $appid = '', $key = ''){
         //设置安全模式
         if(isset($_GET['encrypt_type']) && $_GET['encrypt_type'] == 'aes'){
             self::$msgSafeMode = true;
@@ -90,8 +90,8 @@ class Wechat {
                 throw new \Exception('缺少参数EncodingAESKey或APP_ID！');
             }
 
-            self::$encodingAESKey = $key;
             self::$appId          = $appid;
+            self::$encodingAESKey = $key;
         }
 
         //TOKEN验证
@@ -115,7 +115,7 @@ class Wechat {
         file_put_contents('./data.xml', $xml);
         //安全模式 或兼容模式
         if(self::$msgSafeMode){
-            if(isset($data['MsgType'] && isset($data['MsgId'])){
+            if(isset($data['MsgType']) && isset($data['MsgId'])){
                 //兼容模式追加解密后的消息内容
                 $data['Decrypt'] = self::extract($data['Encrypt']);
             } else { 
