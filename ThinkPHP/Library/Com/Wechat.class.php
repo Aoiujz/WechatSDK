@@ -40,13 +40,6 @@ class Wechat {
     const MSG_EVENT_LOCATION    = 'LOCATION';
     const MSG_EVENT_CLICK       = 'CLICK';
     const MSG_EVENT_VIEW        = 'VIEW';
-    
-    /**
-     * 消息加解密方式
-     */
-    const MSG_TEXT_MODE = 0;
-    const MSG_COMP_MODE = 1;
-    const MSG_SAFE_MODE = 2;
 
     /**
      * 微信推送过来的数据
@@ -73,24 +66,26 @@ class Wechat {
     private static $encodingAESKey = '';
 
     /**
-     * 当前消息模式
-     * @var integer
+     * 是否使用安全模式
+     * @var boolean
      */
-    private static $msgMode = 0;
+    private static $msgSafeMode = false;
 
     /**
      * 构造方法，用于实例化微信SDK
      * 自动回复消息时实例化该SDK
      * @param string $token 微信后台填写的TOKEN
-     * @param string $mode  消息加解密方式
      * @param string $key   消息加密KEY (EncodingAESKey)
      * @param string $appid 微信APPID (安全模式和兼容模式有效)
      */
-    public function __construct($token, $mode = self::MSG_TEXT_MODE, $key = '', $appid = ''){
-        self::$msgMode = $mode; //设置消息模式
+    public function __construct($token, $key = '', $appid = ''){
+        //设置安全模式
+        if(isset($_GET['encrypt_type']) && $_GET['encrypt_type'] == 'aes'){
+            self::$msgSafeMode = true;
+        }
 
         //参数验证
-        if($mode != self::MSG_TEXT_MODE){
+        if(self::$msgSafeMode){
             if(empty($key) || empty($appid)){
                 throw new \Exception('缺少参数EncodingAESKey或APP_ID！');
             }
@@ -118,22 +113,15 @@ class Wechat {
         $xml  = file_get_contents("php://input");  
         $data = self::xml2data($xml);
 
-        //处理消息内容
-        switch (self::$msgMode) {
-            case self::MSG_TEXT_MODE: //明文模式
-                //不需要任何处理
-                break;
-
-            case self::MSG_COMP_MODE: //兼容模式
+        //安全模式 或兼容模式
+        if(self::$msgSafeMode){
+            if(isset($data['MsgType'])){
+                //兼容模式追加解密后的消息内容
                 $data['Decrypt'] = self::extract($data['Encrypt']);
-                break;
-
-            case self::MSG_SAFE_MODE: //安全模式
+            } else { 
+                //安全模式
                 $data = self::extract($data['Encrypt']);
-                break;
-
-            default:
-                throw new \Exception('不支持的消息加密类型！');
+            }
         }
 
         $this->data = $data;
@@ -170,7 +158,7 @@ class Wechat {
         }
 
         //安全模式，加密消息内容
-        if(self::$msgMode == self::MSG_SAFE_MODE){
+        if(self::$msgSafeMode){
             $data = self::generate($data);
         }
 

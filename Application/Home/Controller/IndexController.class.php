@@ -29,7 +29,7 @@ class IndexController extends Controller{
             $crypt_key = 'q6FPCUoCQWaOiR3UUe5RfQu8A7hlJcMW4BnNyH9z2il'; //消息加密KEY（EncodingAESKey）
 
             /* 加载微信SDK */
-            $wechat = new Wechat($token, Wechat::MSG_COMP_MODE, $crypt_key, $appid);
+            $wechat = new Wechat($token, $crypt_key, $appid);
             
             /* 获取请求信息 */
             $data = $wechat->request();
