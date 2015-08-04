@@ -24,9 +24,9 @@ class IndexController extends Controller{
     public function index($id = ''){
         //调试
         try{
-            $appid = 'wx4d5073e65ba9fcce'; //AppID(应用ID)
-            $token = 'E9E05045F594065909D2B5554A8F34CE'; //微信后台填写的TOKEN
-            $crypt = 'q6FPCUoCQWaOiR3UUe5RfQu8A7hlJcMW4BnNyH9z2il'; //消息加密KEY（EncodingAESKey）
+            $appid = ''; //AppID(应用ID)
+            $token = ''; //微信后台填写的TOKEN
+            $crypt = ''; //消息加密KEY（EncodingAESKey）
             
             /* 加载微信SDK */
             $wechat = new Wechat($token, $appid, $crypt);
@@ -87,6 +87,11 @@ class IndexController extends Controller{
         
     }
 
+    /**
+     * 调试DEMO
+     * @param  Object $wechat Wechat对象
+     * @param  array  $data   接受到微信推送的消息
+     */
     private function test($wechat, $data){
         switch ($data['MsgType']) {
             case Wechat::MSG_TYPE_EVENT:
@@ -169,10 +174,14 @@ class IndexController extends Controller{
         }
     }
 
-
+    /**
+     * 资源文件上传方法
+     * @param  string $type 上传的资源类型
+     * @return string       媒体资源ID
+     */
     private function upload($type){
-        $appid     = 'wx58aebef2023e68cd';
-        $appsecret = 'bf818ec2fb49c20a478bbefe9dc88c60';
+        $appid     = '';
+        $appsecret = '';
 
         $token = session("token");
 
@@ -217,7 +226,7 @@ class IndexController extends Controller{
             $this->upload($type);
         }
 
-        //file_put_contents('./media.json', json_encode($media));
+        file_put_contents('./media.json', json_encode($media));
         return $media['media_id'];
 
     }
