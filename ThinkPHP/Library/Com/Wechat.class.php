@@ -118,7 +118,7 @@ class Wechat {
 
         //安全模式 或兼容模式
         if(self::$msgSafeMode){
-            if(isset($data['MsgType']) && isset($data['MsgId'])){
+            if(isset($data['MsgType'])){
                 //兼容模式追加解密后的消息内容
                 $data['Decrypt'] = self::extract($data['Encrypt']);
             } else { 

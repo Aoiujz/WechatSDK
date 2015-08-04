@@ -35,7 +35,6 @@ class IndexController extends Controller{
             $data = $wechat->request();
 
             if($data && is_array($data)){
-
                 /**
                  * 你可以在这里分析数据，决定要返回给用户什么样的信息
                  * 接受到的信息类型有10种，分别使用下面10个常量标识
@@ -60,7 +59,6 @@ class IndexController extends Controller{
 
                 //记录微信推送过来的数据
                 file_put_contents('./data.json', json_encode($data));
-                file_put_contents('./get.json', json_encode($_GET));
 
                 /* 响应当前请求(自动回复) */
                 //$wechat->response($content, $type);
@@ -79,7 +77,8 @@ class IndexController extends Controller{
                  * 
                  */
                 
-                $this->test($wechat, $data);
+                //执行Demo
+                $this->demo($wechat, $data);
             }
         } catch(\Exception $e){
             file_put_contents('./error.json', json_encode($e->getMessage()));
@@ -88,11 +87,11 @@ class IndexController extends Controller{
     }
 
     /**
-     * 调试DEMO
+     * DEMO
      * @param  Object $wechat Wechat对象
      * @param  array  $data   接受到微信推送的消息
      */
-    private function test($wechat, $data){
+    private function demo($wechat, $data){
         switch ($data['MsgType']) {
             case Wechat::MSG_TYPE_EVENT:
                 switch ($data['Event']) {
@@ -117,22 +116,26 @@ class IndexController extends Controller{
                         break;
 
                     case '图片':
-                        $media_id = $this->upload('image');
+                        //$media_id = $this->upload('image');
+                        $media_id = '1J03FqvqN_jWX6xe8F-VJr7QHVTQsJBS6x4uwKuzyLE';
                         $wechat->replyImage($media_id);
                         break;
 
                     case '语音':
-                        $media_id = $this->upload('voice');
+                        //$media_id = $this->upload('voice');
+                        $media_id = '1J03FqvqN_jWX6xe8F-VJgisW3vE28MpNljNnUeD3Pc';
                         $wechat->replyVoice($media_id);
                         break;
 
                     case '视频':
-                        $media_id = $this->upload('video');
+                        //$media_id = $this->upload('video');
+                        $media_id = '1J03FqvqN_jWX6xe8F-VJn9Qv0O96rcQgITYPxEIXiQ';
                         $wechat->replyVideo($media_id, '视频标题', '视频描述信息。。。');
                         break;
 
                     case '音乐':
-                        $thumb_media_id = $this->upload('thumb');
+                        //$thumb_media_id = $this->upload('thumb');
+                        $thumb_media_id = '1J03FqvqN_jWX6xe8F-VJrjYzcBAhhglm48EhwNoBLA';
                         $wechat->replyMusic(
                             'Wakawaka!', 
                             'Shakira - Waka Waka, MaxRNB - Your first R/Hiphop source', 
@@ -226,7 +229,6 @@ class IndexController extends Controller{
             $this->upload($type);
         }
 
-        file_put_contents('./media.json', json_encode($media));
         return $media['media_id'];
     }
 }
