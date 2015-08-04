@@ -109,10 +109,13 @@ class Wechat {
         }
     }
 
+    /**
+     * 初始化微信推送的数据
+     */
     private function init(){
         $xml  = file_get_contents("php://input");  
         $data = self::xml2data($xml);
-        file_put_contents('./data.xml', $xml);
+        
         //安全模式 或兼容模式
         if(self::$msgSafeMode){
             if(isset($data['MsgType']) && isset($data['MsgId'])){
