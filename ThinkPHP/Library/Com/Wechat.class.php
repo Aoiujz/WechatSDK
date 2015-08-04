@@ -113,10 +113,9 @@ class Wechat {
      * 初始化微信推送的数据
      */
     private function init(){
-        $xml  = file_get_contents("php://input");  
+        $xml  = file_get_contents("php://input");
         $data = self::xml2data($xml);
-        file_put_contents('./data.xml', $xml);
-        
+
         //安全模式 或兼容模式
         if(self::$msgSafeMode){
             if(isset($data['MsgType']) && isset($data['MsgId'])){
@@ -390,11 +389,19 @@ class Wechat {
     }
 
     private static function extract($encrypt){
+        //验证数据签名
+        $signature = self::sign($_GET['timestamp'], $_GET['nonce'], $encrypt);
+        if($signature != $_GET['msg_signature']){
+            throw new \Exception('数据签名错误！');
+        }
+
         //消息解密对象
         $WechatCrypt = new WechatCrypt(self::$encodingAESKey, self::$appId);
 
         //解密得到回明文消息
         $decrypt = $WechatCrypt->decrypt($encrypt);
+        
+        //返回解密的数据
         return self::xml2data($decrypt);
     }
 
@@ -411,10 +418,8 @@ class Wechat {
         $encrypt = $WechatCrypt->encrypt($xml);
 
         //签名
-        $nonce = mt_rand(0, 9999999999);
-        $sign  = array(self::$token, NOW_TIME, $nonce, $encrypt);
-        sort($sign, SORT_STRING);
-        $signature = sha1(implode($sign));
+        $nonce     = mt_rand(0, 9999999999);
+        $signature = self::sign(NOW_TIME, $nonce, $encrypt);
 
         /* 加密消息基础数据 */
         $data = array(
@@ -425,5 +430,18 @@ class Wechat {
         );
 
         return $data;
+    }
+
+    /**
+     * 生成数据签名
+     * @param  string $timestamp 时间戳
+     * @param  string $nonce     随机数
+     * @param  string $encrypt   被签名的数据
+     * @return string            SHA1签名
+     */
+    private static function sign($timestamp, $nonce, $encrypt){
+        $sign  = array(self::$token, $timestamp, $nonce, $encrypt);
+        sort($sign, SORT_STRING);
+        return sha1(implode($sign));
     }
 }
